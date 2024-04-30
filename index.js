@@ -25,6 +25,39 @@ app.get("/api/hello", function (req, res) {
 });
 
 
+// Timestamp API
+app.route('/api')
+  .get((req, res) => {
+    const unix = new Date() / 1  
+    const utc = new Date().toUTCString()
+    res.json({ unix, utc })
+  })
+
+app.get('/api/:date', (req, res) => {
+  let unix;
+  let utc;
+  try{
+    if(!req?.params?.date){
+      unix = new Date() / 1  
+      utc = new Date().toUTCString()
+    } else if(req.params.date.includes('-') || req.params.date.includes('/')){
+      unix = new Date(req.params.date) / 1  
+      utc = new Date(req.params.date).toUTCString()
+    } else{
+      unix = new Date(Number.parseInt(req.params.date)) / 1  
+      utc = new Date(Number.parseInt(req.params.date)).toUTCString()
+    }
+
+    if(utc === 'Invalid Date' || unix === 0){
+      res.json({ error: 'Invalid Date'})
+    } else {
+      res.json({ unix, utc })
+    }
+
+  } catch(err){
+    res.json({ error: 'Invalid Date'})
+  }
+})
 
 // Listen on port set in environment variable or default to 3000
 var listener = app.listen(process.env.PORT || 3000, function () {
