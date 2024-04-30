@@ -36,17 +36,18 @@ app.route('/api')
 app.get('/api/:date', (req, res) => {
   let unix;
   let utc;
+  let date = req?.params?.date
   try{
-    if(!req?.params?.date){
+    if(!date){
       unix = new Date() / 1  
       utc = new Date().toUTCString()
-    } else if(req.params.date.includes('-') || req.params.date.includes('/')){
-      unix = new Date(req.params.date) / 1  
-      utc = new Date(req.params.date).toUTCString()
-    } else{
-      unix = new Date(Number.parseInt(req.params.date)) / 1  
-      utc = new Date(Number.parseInt(req.params.date)).toUTCString()
-    }
+    } else if(!date.isNaN()) {
+      unix = new Date(Number.parseInt(date)) / 1  
+      utc = new Date(Number.parseInt(date)).toUTCString()
+    } else {
+      unix = new Date(date) / 1  
+      utc = new Date(date).toUTCString()
+    } 
 
     if(utc === 'Invalid Date' || unix === 0){
       res.json({ error: 'Invalid Date'})
